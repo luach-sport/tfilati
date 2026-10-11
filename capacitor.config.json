@@ -1,0 +1,21 @@
+{
+  "appId": "com.luachsport.tfilati",
+  "appName": "תפילתי",
+  "webDir": "www",
+  "backgroundColor": "#0B1026",
+  "android": {
+    "backgroundColor": "#0B1026",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_tfilati",
+      "iconColor": "#F2C14E"
+    },
+    "StatusBar": {
+      "backgroundColor": "#0B1026",
+      "style": "DARK",
+      "overlaysWebView": false
+    }
+  }
+}
