@@ -7,3 +7,6 @@ www/cap-runtime.js
 .DS_Store
 
 !signing/release.jks
+_site/
+.release.json
+.kit/

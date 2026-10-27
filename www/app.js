@@ -90,8 +90,12 @@
     trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
     sparkle: '<path d="M12 3l1.9 5.8L20 10.7l-5.8 1.9L12 18.5l-1.9-5.9L4 10.7l6.1-1.9z"/>',
     calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
-    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'
+    clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
   };
+  // Small feature files loaded after this one (share-app.js) add their buttons here, and can take the back button.
+  const EXT = { actions: {}, back: null };
   function svg(name, size, sw) {
     const s = size || 20;
     return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 2) +
@@ -791,7 +795,12 @@
       '<button type="button" class="btn" data-action="restore">' + svg('upload', 16) + 'שחזור מגיבוי</button></div>' +
       '<button type="button" class="btn danger" style="width:100%;margin-top:10px" data-action="reset">' + svg('trash', 16) + 'מחיקת כל הסימונים</button></section>';
 
-    h += '<p class="about">תפילתי · גרסה <span class="ltr">' + APP_VERSION + '</span></p>';
+    // sharing the app with friends (share-app.js)
+    h += '<section class="card" style="margin-top:14px" aria-label="שיתוף"><div class="card-head"><h2>שיתוף</h2></div>' +
+      '<p class="note">רוצים שגם חבר יעקוב אחרי התפילות? שלחו לו קישור לאתר של תפילתי, או את האפליקציה עצמה כקובץ.</p>' +
+      '<button type="button" class="btn gold" style="width:100%;margin-top:10px" data-action="share-app">' + svg('share', 18) + 'שיתוף האפליקציה</button></section>';
+
+    h += '<p class="about">תפילתי · גרסה <span class="ltr">' + APP_VERSION + '</span><br>פותח על ידי <b>Itzko</b></p>';
     return h;
   }
 
@@ -1192,7 +1201,7 @@
       case 'cel-close': closeOverlay(); break;
       case 'cel-share': shareCelebration(); break;
       case 'onboard-start': finishOnboarding(); break;
-      default: break;
+      default: if (EXT.actions[a]) EXT.actions[a](t); break;
     }
   }
   function addPlaceFrom(sel, inSheet) {
@@ -1239,6 +1248,7 @@
   }
 
   function onBack() {
+    if (EXT.back && EXT.back()) return;
     if (ui.overlay && ui.overlay.type === 'cel') { closeOverlay(); return; }
     if (ui.overlay && ui.overlay.type === 'onb') { call('App', 'minimizeApp'); return; }
     if (ui.sheet) { closeSheet(); return; }
@@ -1592,7 +1602,9 @@
     get state() { return state; }, set state(v) { state = normalize(v); },
     buildSchedule: (now) => buildSchedule(now), inQuiet: inQuiet, sunset: sunset, nightfall: nightfall, cityById: cityById,
     hebDate: hebDate, gematriya: gematriya, isYomTov: isYomTov, weekStats: weekStats, streak: streak, normalize: normalize,
-    setMark: setMark, render: renderScreen, keyOf: keyOf, parseKey: parseKey
+    setMark: setMark, render: renderScreen, keyOf: keyOf, parseKey: parseKey,
+    // for feature files (share-app.js)
+    ext: EXT, toast: toast, svg: svg, esc: esc, isNative: isNative, callRaw: callRaw, switchTab: switchTab, ui: ui
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();

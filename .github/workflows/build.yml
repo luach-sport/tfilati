@@ -3,12 +3,17 @@ name: Build APK
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'tools/**'
+      - 'site/**'
+      - 'scripts/site/**'
+      - '.github/workflows/site.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
+  actions: write
 
 concurrency:
   group: build-${{ github.ref }}
@@ -37,11 +42,6 @@ jobs:
 
       - name: Prepare web app (fonts, runtime, version)
         run: node scripts/prepare-web.mjs
-
-      - name: Upload web version for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: www
 
       - name: Create Android project
         run: npx cap add android
@@ -95,22 +95,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="v${APP_VERSION}"
-          NOTES=$'תפילתי — גרסה '"${APP_VERSION}"$'\n\nלהתקנה: הורידו את tfilati.apk בטלפון ופתחו אותו. בהתקנה הראשונה יש לאשר "התקנה ממקור לא ידוע".\nעדכון: מתקינים את הקובץ החדש מעל הקיים. הנתונים נשמרים.'
+          WHATS_NEW=""
+          if [ -s release-notes.txt ]; then WHATS_NEW=$'\n\nמה חדש:\n'"$(sed '/^\s*$/d; s/^/• /' release-notes.txt)"; fi
+          NOTES=$'תפילתי — גרסה '"${APP_VERSION}${WHATS_NEW}"$'\n\nלהתקנה: הורידו את tfilati.apk בטלפון ופתחו אותו. בהתקנה הראשונה יש לאשר "התקנה ממקור לא ידוע".\nעדכון: מתקינים את הקובץ החדש מעל הקיים. הנתונים נשמרים.\nהאתר עם הסבר לכל כפתור: https://luach-sport.github.io/tfilati/'
           gh release create "$TAG" tfilati.apk --title "תפילתי ${APP_VERSION}" --notes "$NOTES" --latest
+
+      - name: Refresh the website (new version number and what's new)
+        if: steps.key.outputs.signed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run site.yml --ref main -R "${GITHUB_REPOSITORY}"
 
       - name: Missing signing password
         if: steps.key.outputs.signed != 'true'
         run: |
           echo "::error::Test build passed, but the APK was not published: add the secret TFILATI_KEY_PASS"
           exit 1
-
-  pages:
-    needs: apk
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: deploy
-        uses: actions/deploy-pages@v4
