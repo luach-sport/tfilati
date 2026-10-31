@@ -63,6 +63,7 @@ jobs:
 
       - name: Build the site
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # download counts from the releases
           PW_FROM: ${{ runner.temp }}/pw/node_modules/
         run: node .kit/kit/lib/build.mjs
 
