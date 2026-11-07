@@ -1,0 +1,45 @@
+@import url('../fonts/fonts.css');
+/* תפילתי's look on top of the shared Itzko kit: the app's night sky (deep navy) with gold for "in a minyan"
+   and sky blue for "alone", Heebo for text and Frank Ruhl Libre for headings. The site stays dark, like the app. */
+:root, :root[data-theme="dark"], :root[data-theme="light"] {
+  --bg: #0B1026;
+  --surface: #151B3B;
+  --inset: #1A2045;
+  --line: #232A55;
+  --ink: #F3EFE6;
+  --muted: #A9B0D0;
+  --primary: #F2C14E;
+  --primary-text: #F2C14E;
+  --primary-soft: #241F0F;
+  --on-primary: #1A1406;
+  --hero: #151B3B;
+  --hero-ink: #F3EFE6;
+  --hero-muted: #C9CDE3;
+  --hero-chip: rgba(242, 193, 78, 0.14);
+  --hero-btn-ink: #1A1406;
+  --sky-text: #9CC3FF;
+  --sky-soft: #13213D;
+  --green-text: #6FD08E;
+  --green-soft: #15291F;
+  --amber-text: #F2C14E;
+  --amber-soft: #241F0F;
+  --maker-accent: #8A6A1A;
+  --credit-accent: #F2C14E;
+  --credit-mono: #F2C14E;
+  --credit-mono-ink: #1A1406;
+  --credit-glow: rgba(242, 193, 78, 0.18);
+  --frame: #232A55;
+  --frame-ink: #C9CDE3;
+  --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.75);
+  --font: 'Heebo', 'Segoe UI', 'Arial Hebrew', Arial, sans-serif;
+  --font-display: 'Frank Ruhl Libre', 'Heebo', serif;
+  color-scheme: dark;
+}
+body { background: radial-gradient(1200px 600px at 80% -10%, #1A2350 0%, rgba(11, 16, 38, 0) 60%), var(--bg); }
+header.hero { border: 1px solid #2E3870; background: linear-gradient(160deg, #1E2650 0%, #151B3B 55%, #0F1430 100%); }
+.cta-row .btn.light { background: #F2C14E; color: #1A1406; }
+.chapter-head .tile.sky { background: var(--sky-soft); color: var(--sky-text); }
+.key.sky { color: var(--sky-text); background: var(--sky-soft); }
+.hero .brand .slogan { font-family: var(--font-display); font-weight: 700; color: #F2C14E; }
+.try-link { position: relative; z-index: 1; align-self: flex-start; color: #F2C14E; font-weight: 600; font-size: 15px; text-decoration: none; }
+.try-link:hover { text-decoration: underline; }
